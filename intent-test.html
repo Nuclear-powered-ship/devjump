@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intent 测试矩阵</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#f0f2f5;width:1200px}
+.h{background:#2c3e50;color:#fff;padding:22px 20px;font-size:30px;font-weight:bold}
+.sub{background:#fff;padding:10px 20px;font-size:20px;color:#555;border-bottom:2px solid #ddd}
+.row{display:flex;gap:12px;padding:10px 12px}
+button,.btn{flex:1;height:110px;font-size:24px;font-weight:bold;border-radius:10px;border:3px solid #999;background:#fff;color:#222;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+.js{background:#e3f2fd;border-color:#1976d2}
+.ah{background:#fff3e0;border-color:#e65100}
+.label{width:180px;display:flex;align-items:center;font-size:22px;color:#444;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="h">Intent 测试矩阵 6写法 x 2触发</div>
+<div class="sub">左=JS(location.href) 右=A链接(href) · 每行一种写法</div>
+
+<div class="row"><div class="label">①component</div>
+<button class="js" onclick="window.location.href='intent:#Intent;component=com.android.settings/.Settings$DevelopmentSettingsActivity;end'">JS comp</button>
+<a class="ah btn" href="intent:#Intent;component=com.android.settings/.Settings$DevelopmentSettingsActivity;end">A comp</a>
+</div>
+
+<div class="row"><div class="label">②action</div>
+<button class="js" onclick="window.location.href='intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end'">JS action</button>
+<a class="ah btn" href="intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end">A action</a>
+</div>
+
+<div class="row"><div class="label">③SubSettings</div>
+<button class="js" onclick="window.location.href='intent:#Intent;component=com.android.settings/.SubSettings;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end'">JS frag</button>
+<a class="ah btn" href="intent:#Intent;component=com.android.settings/.SubSettings;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end">A frag</a>
+</div>
+
+<div class="row"><div class="label">④intent://</div>
+<button class="js" onclick="window.location.href='intent://dev/#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;category=android.intent.category.DEFAULT;end'">JS intent://</button>
+<a class="ah btn" href="intent://dev/#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;category=android.intent.category.DEFAULT;end">A intent://</a>
+</div>
+
+<div class="row"><div class="label">⑤launchFlags</div>
+<button class="js" onclick="window.location.href='intent:#Intent;action=android.intent.action.MAIN;launchFlags=0x10810000;component=com.android.settings/.SettingsActivity;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end'">JS flags</button>
+<a class="ah btn" href="intent:#Intent;action=android.intent.action.MAIN;launchFlags=0x10810000;component=com.android.settings/.SettingsActivity;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end">A flags</a>
+</div>
+
+<div class="row"><div class="label">⑥action+comp</div>
+<button class="js" onclick="window.location.href='intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;component=com.android.settings/com.android.settings.development.DevelopmentSettings;end'">JS combo</button>
+<a class="ah btn" href="intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;component=com.android.settings/com.android.settings.development.DevelopmentSettings;end">A combo</a>
+</div>
+
+</body>
+</html>

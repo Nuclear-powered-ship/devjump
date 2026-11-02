@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>学习机设置跳转助手</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#eef1f5;color:#1c2733;padding-bottom:40px;max-width:820px;margin:0 auto}
+header{background:linear-gradient(135deg,#1a5fb4,#2d7dd2);color:#fff;padding:26px 22px 22px}
+header h1{font-size:28px;margin-bottom:8px}
+header p{font-size:16px;opacity:.92;line-height:1.55}
+.hero{padding:16px 14px}
+#autoBtn{display:block;width:100%;padding:24px 10px;font-size:26px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e8590c,#f08c00);border:none;border-radius:16px;box-shadow:0 6px 16px rgba(232,89,12,.28)}
+#autoBtn:active{transform:translateY(2px)}
+#status{margin-top:12px;padding:12px 14px;background:#fff;border-radius:12px;font-size:16px;color:#4a5a6a;line-height:1.5;min-height:48px;border-left:5px solid #adb5bd}
+#status.ok{border-color:#2f9e44;color:#1e6b2e}
+#status.warn{border-color:#e8590c;color:#8a3d05}
+section{margin:14px 14px 0;background:#fff;border-radius:14px;padding:16px 14px 10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+h2{font-size:20px;margin-bottom:12px;color:#12456b;display:flex;align-items:center;gap:8px}
+h2 small{font-size:13px;color:#7b8794;font-weight:400}
+a.btn,button.btn{display:block;width:100%;text-align:left;padding:16px;margin-bottom:10px;font-size:19px;font-weight:600;color:#12324a;background:#f5f8fb;border:2px solid #d5e0ea;border-radius:12px;text-decoration:none;line-height:1.45}
+a.btn:active,button.btn:active{background:#e3eef7;border-color:#2d7dd2}
+a.btn small{display:block;font-size:14px;font-weight:400;color:#6b7c8d;margin-top:4px}
+.primary{background:#e7f5ff!important;border-color:#4dabf7!important}
+.danger{background:#fff5f5!important;border-color:#ffa8a8!important}
+input{width:100%;padding:14px;font-size:17px;border:2px solid #d5e0ea;border-radius:10px;margin-bottom:10px;background:#fff}
+.row{display:flex;gap:10px}
+.row input{flex:1}
+pre{background:#1c2733;color:#e6edf3;padding:14px;border-radius:10px;font-size:13px;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-all;margin-bottom:12px}
+.tip{font-size:15px;color:#5b6b7b;line-height:1.7;margin-bottom:12px}
+.tip b{color:#c92a2a}
+.step{background:#f8f9fa;border-left:4px solid #2d7dd2;padding:12px 14px;border-radius:8px;font-size:16px;line-height:1.7;color:#33475b;margin-bottom:12px}
+footer{text-align:center;font-size:13px;color:#8b98a5;padding:24px 16px 10px;line-height:1.7}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;background:#e7f5ff;color:#1971c2;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<header>
+  <h1>学习机设置跳转助手</h1>
+  <p>点击按钮尝试打开系统的隐藏设置页。<br>若提示被拦截，请拉到页面底部看「手动方案」。</p>
+</header>
+
+<div class="hero">
+  <button id="autoBtn" onclick="tryAll()">★ 一键自动尝试（先点这个）</button>
+  <div id="status">就绪。点了上面的按钮后，等 2～3 秒看是否跳转。</div>
+</div>
+
+<section>
+  <h2>开发者选项 <small>逐个试，命中即停</small></h2>
+  <a class="btn primary" href="intent:#Intent;component=com.android.settings/.Settings$DevelopmentSettingsActivity;end">① 组件直跳（安卓8.x 最常见）<small>Settings$DevelopmentSettingsActivity</small></a>
+  <a class="btn primary" href="intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end">② 系统标准动作<small>APPLICATION_DEVELOPMENT_SETTINGS</small></a>
+  <a class="btn" href="intent:#Intent;component=com.android.settings/.Settings$DevelopmentSettingsDashboardActivity;end">③ 组件直跳（安卓9-13）<small>DevelopmentSettingsDashboardActivity</small></a>
+  <a class="btn" href="intent:#Intent;component=com.android.settings/.DevelopmentSettings;end">④ 旧版独立类<small>.DevelopmentSettings</small></a>
+  <a class="btn" href="intent:#Intent;component=com.android.settings/.SubSettings;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end">⑤ 设置碎片方式<small>SubSettings + show_fragment</small></a>
+  <a class="btn" href="intent:#Intent;action=android.intent.action.MAIN;launchFlags=0x10810000;component=com.android.settings/.SettingsActivity;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end">⑥ 碎片 + 启动标志<small>launchFlags=0x10810000</small></a>
+</section>
+
+<section>
+  <h2>常用设置页</h2>
+  <a class="btn" href="intent:#Intent;component=com.android.settings/.Settings$DeviceInfoSettingsActivity;end">关于设备<small>部分机型要在这里连点版本号</small></a>
+  <a class="btn" href="intent:#Intent;action=android.settings.ADB_SETTINGS;end">USB 调试开关页<small>ADB_SETTINGS</small></a>
+  <a class="btn" href="intent:#Intent;action=android.settings.MANAGE_UNKNOWN_APP_SOURCES;end">安装未知应用<small>安卓8+ 按应用授权</small></a>
+  <a class="btn" href="intent:#Intent;action=android.settings.APPLICATION_SETTINGS;end">应用管理列表<small>APPLICATION_SETTINGS</small></a>
+  <a class="btn" href="intent:#Intent;action=android.settings.ACCESSIBILITY_SETTINGS;end">无障碍设置</a>
+  <a class="btn" href="intent:#Intent;action=android.settings.SECURITY_SETTINGS;end">安全设置</a>
+</section>
+
+<section>
+  <h2>厂商专用 <small>讯飞 / 展讯 / 步步高 / 优学派</small></h2>
+  <a class="btn" href="intent:#Intent;component=com.iflytek.settings/com.iflytek.settings.DevelopmentSettings;end">讯飞设置（独立包）<small>com.iflytek.settings</small></a>
+  <a class="btn" href="intent:#Intent;component=com.sprd.engineermode/com.sprd.engineermode.EngineerModeMain;end">展讯工程模式<small>EngineerModeMain</small></a>
+  <a class="btn" href="intent:#Intent;component=com.sprd.engineermode/com.sprd.engineermode.activity.DebugActivity;end">展讯 DEBUG 页<small>DebugActivity</small></a>
+  <a class="btn" href="intent:#Intent;component=com.bbk.settings/com.bbk.settings.development.DevelopmentSettingsActivity;end">步步高（试探）<small>com.bbk.settings</small></a>
+  <a class="btn" href="intent:#Intent;component=com.youdao.settings/com.youdao.settings.development.DevelopmentSettings;end">优学派（试探）<small>com.youdao.settings</small></a>
+</section>
+
+<section>
+  <h2>其他品牌兜底</h2>
+  <a class="btn" href="intent:#Intent;component=com.miui.securitycenter/com.miui.securitycenter.utils.DeveloperSetup;end">小米 / 红米</a>
+  <a class="btn" href="intent:#Intent;component=com.huawei.android.hwsettings/com.huawei.android.hwsettings.development.DevelopmentSettingsActivity;end">华为 / 荣耀</a>
+  <a class="btn" href="intent:#Intent;component=com.samsung.android.settings/com.samsung.android.settings.development.DevelopmentSettingsMain;end">三星</a>
+  <a class="btn" href="intent:#Intent;component=com.coloros.settings/com.oppo.settings.development.DeveloperOptionActivity;end">OPPO / 一加 / realme</a>
+  <a class="btn" href="intent:#Intent;component=com.vivo.settings/com.vivo.settings.development.DeveloperOptionSettings;end">vivo</a>
+</section>
+
+<section>
+  <h2>自定义跳转</h2>
+  <p class="tip">知道包名和类名时用这个。填好点按钮。</p>
+  <input id="pkg" placeholder="包名，例如 com.android.settings">
+  <input id="cls" placeholder="完整类名，例如 com.android.settings.Settings">
+  <button class="btn" onclick="goCustom()">打开自定义页面</button>
+</section>
+
+<section>
+  <h2>手动方案 <small>跳转全部失败时用</small></h2>
+  <div class="step">
+    <b>方法一：连点版本号（最可靠）</b><br>
+    设置 → 关于平板 / 我的设备 → 找到「版本号」→ <b>连续快速点 7 次</b> → 提示"已进入开发者模式"。<br>
+    部分学习机需要先在家长端解除「禁止修改系统设置」。
+  </div>
+  <div class="step">
+    <b>方法二：电脑 ADB（需已开 USB 调试）</b><br>
+    手机/平板连电脑，执行下面的命令。
+  </div>
+  <pre id="adbcmd">adb shell settings put global development_settings_enabled 1
+adb shell am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS
+adb shell settings put secure install_non_market_apps 1</pre>
+  <button class="btn" onclick="copyAdb()">复制 ADB 命令</button>
+  <div class="step">
+    <b>方法三：展讯芯片机型</b><br>
+    拨号盘输入 <b>*#*#83781#*#*</b> 或打开「工程模式」→ DEBUG&LOG → 打开 USB Debug。
+  </div>
+</section>
+
+<footer>
+  本页只发送系统 Intent，不修改任何文件、不刷机。<br>
+  设备差异较大，部分入口可能不存在，属正常现象。
+</footer>
+
+<script>
+/* ===== 自动尝试链：逐条尝试，页面被切走即视为成功 ===== */
+var devList = [
+  'intent:#Intent;component=com.android.settings/.Settings$DevelopmentSettingsActivity;end',
+  'intent:#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end',
+  'intent:#Intent;component=com.android.settings/.Settings$DevelopmentSettingsDashboardActivity;end',
+  'intent:#Intent;component=com.android.settings/.DevelopmentSettings;end',
+  'intent:#Intent;component=com.android.settings/.SubSettings;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end',
+  'intent:#Intent;action=android.intent.action.MAIN;launchFlags=0x10810000;component=com.android.settings/.SettingsActivity;S.%3Asettings%3Ashow_fragment=com.android.settings.development.DevelopmentSettingsDashboardFragment;end'
+];
+var devNames = ['组件直跳 8.x','系统标准动作','组件直跳 9-13','旧版独立类','设置碎片','碎片+启动标志'];
+var running = false, idx = 0, jumped = false, timer = null;
+
+function setStatus(msg, cls){
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = cls || '';
+}
+
+function markHidden(){ jumped = true; }
+
+document.addEventListener('visibilitychange', function(){
+  if (document.hidden) markHidden();
+});
+window.addEventListener('pagehide', markHidden);
+window.addEventListener('blur', function(){ setTimeout(function(){ if(document.hidden) markHidden(); }, 300); });
+
+function tryAll(){
+  if (running) return;
+  running = true; idx = 0; jumped = false;
+  setStatus('开始自动尝试… 共 ' + devList.length + ' 种方式');
+  nextTry();
+}
+
+function nextTry(){
+  if (jumped){ setStatus('已跳转成功 ✓', 'ok'); running = false; return; }
+  if (idx >= devList.length){
+    running = false;
+    setStatus('全部方式都试过了，都没跳转。请用下面「手动方案」：连点版本号 7 次，或电脑 ADB。', 'warn');
+    return;
+  }
+  var n = devNames[idx];
+  setStatus('正在尝试 ' + (idx+1) + '/' + devList.length + '：' + n + ' …');
+  var uri = devList[idx];
+  idx++;
+  try { window.location.href = uri; } catch(e){}
+  clearTimeout(timer);
+  timer = setTimeout(function(){
+    if (document.hidden || jumped){ setStatus('已跳转成功 ✓', 'ok'); running = false; return; }
+    nextTry();
+  }, 1400);
+}
+
+/* ===== 自定义 ===== */
+function goCustom(){
+  var p = document.getElementById('pkg').value.trim();
+  var c = document.getElementById('cls').value.trim();
+  if (!p || !c){ alert('请填写包名和完整类名'); return; }
+  var uri = 'intent:#Intent;component=' + p + '/' + c + ';end';
+  window.location.href = uri;
+}
+
+function copyAdb(){
+  var t = document.getElementById('adbcmd').textContent;
+  var ta = document.createElement('textarea');
+  ta.value = t; document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); alert('已复制'); } catch(e){ alert('复制失败，请长按文字手动复制'); }
+  document.body.removeChild(ta);
+}
+
+/* 记录访问，便于排查 */
+try { localStorage.setItem('dj_last', new Date().toISOString()); } catch(e){}
+</script>
+</body>
+</html>
